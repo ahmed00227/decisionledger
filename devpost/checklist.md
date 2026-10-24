@@ -23,7 +23,7 @@ Build mode: fast
   Learner check: Skim one failing-vs-passing fixture and the matching test names; confirm the rule’s documented limitations still match what you want claimed.
   Commit: `Add Laravel scaffold and offline architecture checker tests`
 
-- [ ] **2. Decisions and check runs persist locally**
+- [x] **2. Decisions and check runs persist locally**
   Becomes usable: Migrations/models for decisions, criteria, check_runs, findings; seeder loads sample Architecture decision + criteria; running the checker through a thin orchestration path creates a **new** CheckRun each time and stores findings linked to that run’s code snapshot (prior runs untouched).
   Why now: Persistence and immutability of runs/findings must work before UI polish; catches data-model mistakes early.
   PRD ref: `prd.md > Decisions library and detail`, `prd.md > States and Boundaries`, `prd.md > Seeded demo content`
