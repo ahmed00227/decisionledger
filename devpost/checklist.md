@@ -33,7 +33,7 @@ Build mode: fast
   Learner check: After seed, open the SQLite DB or a simple tinker/query output and confirm the sample decision and criteria exist.
   Commit: `Persist decisions, check runs, and findings in SQLite`
 
-- [ ] **3. Core journey UI: overview, decisions, Check PHP**
+- [x] **3. Core journey UI: overview, decisions, Check PHP**
   Becomes usable: Browser UI for overview (header, summaries, recent decisions, New Decision, Check PHP), decision create/show/edit, and dedicated Check PHP screen (paste, scope, criteria preview, results + clean summary, evidence). Look and feel follows spec (light slate, compact).
   Why now: Makes the product demonstrable end-to-end after the kernel and data are proven.
   PRD ref: `prd.md > The Core Journey`, `prd.md > Screens and Layout`, `prd.md > Overview and navigation`, `prd.md > Decisions library and detail`, `prd.md > Check PHP`, `prd.md > Look and Feel`
