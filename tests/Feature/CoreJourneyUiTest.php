@@ -92,4 +92,19 @@ class CoreJourneyUiTest extends TestCase
             ->assertRedirect(route('checks.show'))
             ->assertSessionHasErrors('php_code');
     }
+
+    #[Test]
+    public function check_page_exposes_demo_sample_loaders_for_core_outcomes(): void
+    {
+        $this->seed();
+
+        $this->get(route('checks.show'))
+            ->assertOk()
+            ->assertSee('Demo samples')
+            ->assertSee('Violating')
+            ->assertSee('Compliant')
+            ->assertSee('Ambiguous')
+            ->assertSee('Incomplete')
+            ->assertSee('Expect: confirmed', false);
+    }
 }

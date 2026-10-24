@@ -38,7 +38,43 @@ class CheckController extends Controller
             'contextNotes' => old('context_notes', $checkRun?->context_notes ?? ''),
             'decisionScope' => old('decision_scope', $selectedDecision ? CheckRun::SCOPE_SINGLE : CheckRun::SCOPE_ALL_COMPATIBLE),
             'supportedRuleKey' => NoDirectEloquentInControllerRule::RULE_KEY,
+            'demoSamples' => $this->demoSamples(),
         ]);
+    }
+
+    /**
+     * @return list<array{id:string,label:string,expect:string,code:string}>
+     */
+    private function demoSamples(): array
+    {
+        $dir = database_path('fixtures/php');
+
+        return [
+            [
+                'id' => 'violating',
+                'label' => 'Violating',
+                'expect' => 'Expect: confirmed + evidence lines',
+                'code' => (string) file_get_contents($dir.'/violating_controller.php'),
+            ],
+            [
+                'id' => 'compliant',
+                'label' => 'Compliant',
+                'expect' => 'Expect: clean summary (no confirmed)',
+                'code' => (string) file_get_contents($dir.'/compliant_controller.php'),
+            ],
+            [
+                'id' => 'ambiguous',
+                'label' => 'Ambiguous',
+                'expect' => 'Expect: needs review (never confirmed)',
+                'code' => (string) file_get_contents($dir.'/ambiguous_repository.php'),
+            ],
+            [
+                'id' => 'incomplete',
+                'label' => 'Incomplete',
+                'expect' => 'Expect: insufficient evidence',
+                'code' => (string) file_get_contents($dir.'/incomplete_controller.php'),
+            ],
+        ];
     }
 
     public function store(RunCheckRequest $request, RunPhpCheck $runner): RedirectResponse

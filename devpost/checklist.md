@@ -75,3 +75,5 @@ Reflection: [offered/answered/declined/already covered — personal answer belon
 Activity mode: [live app and editor, explicit static fallback, focused alternative, prior practice, or recap]
 
 ## Revisions
+
+- Expanded checker automated matrix and Check PHP demo sample loaders — maximized testing value of the single supported rule without adding seeded decisions or unsupported “fake” rules; incomplete fixture + UI buttons for violating/compliant/ambiguous/incomplete outcomes.

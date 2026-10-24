@@ -13,9 +13,23 @@
             @csrf
 
             <div>
-                <label class="block text-sm font-medium text-slate-700" for="php_code">PHP code <span class="text-red-700">*</span></label>
+                <div class="flex flex-wrap items-end justify-between gap-2">
+                    <label class="block text-sm font-medium text-slate-700" for="php_code">PHP code <span class="text-red-700">*</span></label>
+                    <p class="text-xs text-slate-500">Demo samples (fill the editor — then Run check)</p>
+                </div>
+                <div class="mt-2 flex flex-wrap gap-2" id="demo-sample-buttons">
+                    @foreach ($demoSamples as $sample)
+                        <button type="button"
+                                class="demo-sample rounded-md border border-slate-300 bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-800 hover:bg-slate-100"
+                                data-expect="{{ $sample['expect'] }}"
+                                data-code="{{ base64_encode($sample['code']) }}">
+                            {{ $sample['label'] }}
+                        </button>
+                    @endforeach
+                </div>
+                <p id="demo-sample-expect" class="mt-2 hidden text-xs text-slate-600"></p>
                 <textarea id="php_code" name="php_code" rows="18" required
-                          class="mt-1 w-full rounded-md border border-slate-300 bg-slate-950 p-3 font-mono text-sm text-slate-100"
+                          class="mt-2 w-full rounded-md border border-slate-300 bg-slate-950 p-3 font-mono text-sm text-slate-100"
                           placeholder="Paste a Laravel controller or related excerpt…">{{ $phpCode }}</textarea>
                 @error('php_code')<p class="mt-1 text-sm text-red-700">{{ $message }}</p>@enderror
             </div>
@@ -149,9 +163,31 @@
                 </section>
             @else
                 <div class="rounded-md border border-dashed border-slate-300 bg-white px-4 py-10 text-center text-sm text-slate-600">
-                    Run a check to see summary, evidence lines, and statuses here.
+                    Load a demo sample above, select the seeded decision, then Run check to see summary, evidence lines, and statuses here.
                 </div>
             @endif
         </div>
     </div>
+
+    <script>
+        document.querySelectorAll('.demo-sample').forEach((button) => {
+            button.addEventListener('click', () => {
+                const code = atob(button.dataset.code);
+                const expect = button.dataset.expect;
+                const textarea = document.getElementById('php_code');
+                const expectEl = document.getElementById('demo-sample-expect');
+                textarea.value = code;
+                expectEl.textContent = expect;
+                expectEl.classList.remove('hidden');
+                const scope = document.getElementById('decision_scope');
+                const decision = document.getElementById('decision_id');
+                if (scope && decision && decision.options.length > 1) {
+                    scope.value = 'single';
+                    if (!decision.value) {
+                        decision.selectedIndex = 1;
+                    }
+                }
+            });
+        });
+    </script>
 @endsection
