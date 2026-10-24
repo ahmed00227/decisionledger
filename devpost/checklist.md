@@ -55,24 +55,24 @@ Build mode: fast
 
 ## Hands-on Checkpoints
 
-- [ ] Early usable behavior explored — after slice 3 (first time the full UI journey is tryable; feedback can still shape slice 4 polish)
-- [ ] Final kick-the-tires exploration and feedback completed
+- [x] Early usable behavior explored — after slice 3 (first time the full UI journey is tryable; feedback can still shape slice 4 polish)
+- [x] Final kick-the-tires exploration and feedback completed
 
 ## Final Review
 
-- [ ] Final review complete — feedback resolved and learner confirms ready to ship
+- [x] Final review complete — feedback resolved and learner confirms ready to ship
 
 ## Code Tour and App Map
 
-- [ ] Learning activity complete — guided route, focused alternative, prior practice connected, or brief recap
-- [ ] Optional edit and transfer reflection addressed — offered/declined/already covered/not applicable as appropriate
-- [ ] `devpost/app-map.html` generated from finished code, checked, and shown, including a project-grounded practice to reuse
+- [x] Learning activity complete — guided route, focused alternative, prior practice connected, or brief recap
+- [x] Optional edit and transfer reflection addressed — offered/declined/already covered/not applicable as appropriate
+- [x] `devpost/app-map.html` generated from finished code, checked, and shown, including a project-grounded practice to reuse
 
-Activity and evidence: [what actually happened; real document/test/code references; unfinished work if interrupted]
-Route and stops: [actual paths and symbols; guided stops completed, or reference-only route]
-Edit outcome: [tried/kept/reverted/declined/not applicable; verification if changed]
-Reflection: [offered/answered/declined/already covered — personal answer belongs only in the ignored profile]
-Activity mode: [live app and editor, explicit static fallback, focused alternative, prior practice, or recap]
+Activity and evidence: Focused alternative + prior practice — learner ran the full manual trust matrix (violating/compliant/ambiguous/incomplete/comments/non-controller/review/history) and confirmed “all clear”; automated suite 24/24. Spec unknown (checker false positives) addressed via narrow rule + release-blocker tests in `PhpArchitectureCheckerTest`.
+Route and stops: Reference route in `devpost/app-map.html` — CheckController::store → NoDirectEloquentInControllerRule::evaluate → PhpArchitectureCheckerTest (not a live guided tour).
+Edit outcome: not applicable (no wrap-up edit requested)
+Reflection: offered below — awaiting optional answer or decline
+Activity mode: prior practice + focused alternative recap
 
 ## Revisions
 

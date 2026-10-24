@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DecisionLedger — App Map</title>
+  <style>
+    :root { color-scheme: light; --ink: #0f172a; --muted: #475569; --line: #e2e8f0; --bg: #f8fafc; --card: #fff; --accent: #334155; }
+    body { margin: 0; font-family: system-ui, sans-serif; color: var(--ink); background: var(--bg); line-height: 1.5; }
+    main { max-width: 44rem; margin: 0 auto; padding: 2rem 1.25rem 3rem; }
+    h1 { font-size: 1.5rem; margin: 0 0 0.35rem; }
+    h2 { font-size: 1rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); margin: 2rem 0 0.75rem; }
+    p, li { color: var(--ink); }
+    .muted { color: var(--muted); font-size: 0.95rem; }
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: 0.5rem; padding: 1rem 1.1rem; }
+    code, .path { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.85em; }
+    svg { width: 100%; height: auto; display: block; margin: 1rem 0; background: var(--card); border: 1px solid var(--line); border-radius: 0.5rem; }
+    details { border: 1px solid var(--line); background: var(--card); border-radius: 0.5rem; padding: 0.65rem 0.9rem; margin: 0.5rem 0; }
+    summary { cursor: pointer; font-weight: 600; }
+    ul { padding-left: 1.2rem; }
+    footer { margin-top: 2.5rem; font-size: 0.85rem; color: var(--muted); }
+  </style>
+</head>
+<body>
+<main>
+  <h1>DecisionLedger — App Map</h1>
+  <p class="muted">Snapshot of the proof of concept: record architectural decisions with machine-checkable criteria, paste PHP, get explainable offline findings. Analyzes pasted text only.</p>
+
+  <h2>Main pieces</h2>
+  <div class="card">
+    <ul>
+      <li><strong>UI (Blade)</strong> — Overview, decisions, Check PHP, in-place review.</li>
+      <li><strong>Thin HTTP controllers</strong> — validate input, orchestrate persistence.</li>
+      <li><strong>Checker domain</strong> — tokenizer rule for direct Eloquent/DB calls in <code>*Controller</code> classes.</li>
+      <li><strong>SQLite</strong> — decisions, criteria, check runs, findings (immutable checker status + separate workflow).</li>
+    </ul>
+  </div>
+
+  <h2>One action through the system</h2>
+  <p class="muted">Action: Run Check PHP on a pasted controller → confirmed finding with evidence lines.</p>
+  <svg viewBox="0 0 640 160" role="img" aria-label="Check PHP flow diagram">
+    <rect x="10" y="40" width="140" height="70" rx="8" fill="#fff" stroke="#cbd5e1"/>
+    <text x="80" y="70" text-anchor="middle" font-size="12" fill="#0f172a">Check PHP form</text>
+    <text x="80" y="90" text-anchor="middle" font-size="11" fill="#64748b">Blade + POST</text>
+    <path d="M155 75 H195" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+    <rect x="200" y="40" width="150" height="70" rx="8" fill="#fff" stroke="#cbd5e1"/>
+    <text x="275" y="70" text-anchor="middle" font-size="12" fill="#0f172a">CheckController</text>
+    <text x="275" y="90" text-anchor="middle" font-size="11" fill="#64748b">RunPhpCheck</text>
+    <path d="M355 75 H395" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+    <rect x="400" y="40" width="110" height="70" rx="8" fill="#fff" stroke="#cbd5e1"/>
+    <text x="455" y="70" text-anchor="middle" font-size="12" fill="#0f172a">Rule</text>
+    <text x="455" y="90" text-anchor="middle" font-size="11" fill="#64748b">token_get_all</text>
+    <path d="M515 75 H545" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+    <rect x="550" y="40" width="80" height="70" rx="8" fill="#fff" stroke="#cbd5e1"/>
+    <text x="590" y="70" text-anchor="middle" font-size="12" fill="#0f172a">Finding</text>
+    <text x="590" y="90" text-anchor="middle" font-size="11" fill="#64748b">SQLite</text>
+    <defs>
+      <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+        <path d="M0,0 L6,3 L0,6 Z" fill="#64748b"/>
+      </marker>
+    </defs>
+  </svg>
+
+  <h2>Reference route (2–3 stops)</h2>
+  <p class="muted">Reference route for reuse — not claiming you walked it live in a guided tour.</p>
+  <details open>
+    <summary>1. Entry — <span class="path">app/Http/Controllers/CheckController.php</span> · <code>store</code></summary>
+    <p>Validates paste, creates a <strong>new</strong> check run via <code>RunPhpCheck</code>, keeps prior runs.</p>
+  </details>
+  <details open>
+    <summary>2. Logic — <span class="path">app/Services/Checking/Rules/NoDirectEloquentInControllerRule.php</span> · <code>evaluate</code></summary>
+    <p>Tokenizer scan; ignores comments/strings; confirmed only for supported direct calls inside <code>*Controller</code> method bodies.</p>
+  </details>
+  <details open>
+    <summary>3. Evidence — <span class="path">tests/Unit/Services/Checking/PhpArchitectureCheckerTest.php</span></summary>
+    <p>Matrix: violating (evidence line), compliant, ambiguous (never confirmed), incomplete, DB facades, unknown rule keys.</p>
+  </details>
+
+  <h2>To change this, start here</h2>
+  <ul>
+    <li>Widen/narrow detection allowlists → <span class="path">NoDirectEloquentInControllerRule.php</span> (<code>QUERY_METHODS</code>, <code>DB_FACADE_NAMES</code>).</li>
+    <li>Demo paste buttons / fixtures → <span class="path">CheckController::demoSamples()</span> + <span class="path">database/fixtures/php/</span>.</li>
+    <li>Seeded decision copy / limitations → <span class="path">database/seeders/DatabaseSeeder.php</span>.</li>
+    <li>Review must not mutate checker status → <span class="path">CheckController::review</span> + <span class="path">FindingReviewTest</span>.</li>
+  </ul>
+
+  <h2>A practice to reuse</h2>
+  <div class="card">
+    <p>When an agent (or you) claims a checker “understands architecture,” demand a <strong>narrow rule</strong>, fixtures for violating / compliant / ambiguous, and a test that treats false <code>confirmed</code> on ambiguous input as a release blocker. Evidence: <span class="path">devpost/spec.md</span> rule section + <span class="path">PhpArchitectureCheckerTest</span>.</p>
+  </div>
+
+  <h2>Run again</h2>
+  <pre class="card" style="overflow:auto">composer install
+cp .env.example .env &amp;&amp; php artisan key:generate
+touch database/database.sqlite
+php artisan migrate --seed
+npm install &amp;&amp; npm run build
+php artisan serve
+php artisan test</pre>
+
+  <footer>
+    Snapshot for commit <code>3804cb4</code> (and later follow-ups). Paths can drift as the app evolves. Planning docs live in <span class="path">devpost/</span>.
+  </footer>
+</main>
+</body>
+</html>
