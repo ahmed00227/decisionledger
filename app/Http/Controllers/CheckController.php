@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ReviewFindingRequest;
 use App\Http\Requests\RunCheckRequest;
 use App\Models\CheckRun;
 use App\Models\Decision;
+use App\Models\Finding;
 use App\Services\Checking\RunPhpCheck;
 use App\Services\Checking\Rules\NoDirectEloquentInControllerRule;
 use Illuminate\Http\RedirectResponse;
@@ -61,5 +63,26 @@ class CheckController extends Controller
             ]))
             ->with('last_check_run_id', $run->id)
             ->with('status', 'Check completed. Analyzed pasted text only.');
+    }
+
+    public function review(ReviewFindingRequest $request, Finding $finding): RedirectResponse
+    {
+        $data = $request->validated();
+        $originalStatus = $finding->checker_status;
+
+        $finding->forceFill([
+            'workflow_status' => $data['workflow_status'],
+            'verification_note' => $data['verification_note'],
+            'reviewed_at' => now(),
+        ])->save();
+
+        // Guardrail: never allow mutating checker_status via mass assignment / accidental overwrite
+        $finding->refresh();
+        abort_unless($finding->checker_status === $originalStatus, 500, 'Checker status must remain immutable.');
+
+        return redirect()
+            ->route('checks.show')
+            ->with('last_check_run_id', $finding->check_run_id)
+            ->with('status', 'Review saved. Original checker result and evidence were preserved — this does not mean the app re-verified a fix.');
     }
 }

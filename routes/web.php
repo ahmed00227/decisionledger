@@ -16,3 +16,4 @@ Route::put('/decisions/{decision}', [DecisionController::class, 'update'])->name
 
 Route::get('/checks', [CheckController::class, 'show'])->name('checks.show');
 Route::post('/checks', [CheckController::class, 'store'])->name('checks.store');
+Route::post('/findings/{finding}/review', [CheckController::class, 'review'])->name('findings.review');

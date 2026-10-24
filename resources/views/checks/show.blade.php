@@ -120,6 +120,26 @@
                                     <pre class="code-block mt-1">{{ $finding->evidence_snippet }}</pre>
                                 </div>
                             @endif
+
+                            @if ($finding->verification_note)
+                                <div class="mt-3 rounded border border-green-200 bg-green-50 px-3 py-2 text-sm text-green-900">
+                                    <div class="text-xs font-semibold uppercase tracking-wide">Human verification note</div>
+                                    <p class="mt-1 whitespace-pre-wrap">{{ $finding->verification_note }}</p>
+                                    <p class="mt-1 text-xs">Checker status unchanged: {{ str_replace('_', ' ', $finding->checker_status) }}</p>
+                                </div>
+                            @endif
+
+                            <form method="post" action="{{ route('findings.review', $finding) }}" class="mt-4 space-y-2 border-t border-slate-100 pt-3">
+                                @csrf
+                                <label class="block text-xs font-medium text-slate-600" for="verification_note_{{ $finding->id }}">Mark reviewed / resolved (does not change checker result)</label>
+                                <textarea id="verification_note_{{ $finding->id }}" name="verification_note" rows="2" required
+                                          class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+                                          placeholder="What you manually verified…">{{ old('verification_note') }}</textarea>
+                                <div class="flex flex-wrap gap-2">
+                                    <button name="workflow_status" value="reviewed" type="submit" class="rounded-md border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium text-slate-800">Mark reviewed</button>
+                                    <button name="workflow_status" value="resolved" type="submit" class="rounded-md border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium text-slate-800">Mark resolved</button>
+                                </div>
+                            </form>
                         </article>
                     @empty
                         <p class="rounded-md border border-dashed border-slate-300 bg-white px-4 py-6 text-sm text-slate-600">

@@ -43,7 +43,7 @@ Build mode: fast
   Learner check: Start the app, open a seeded decision, run Check PHP with the violating fixture, and say whether the finding (decision, criterion, lines, status) is clear enough for a 60s demo.
   Commit: `Add overview, decisions, and Check PHP UI`
 
-- [ ] **4. Review workflow, polish, and README**
+- [x] **4. Review workflow, polish, and README**
   Becomes usable: In-place reviewed/resolved + verification note without overwriting checker_status/evidence; polished desktop UI pass; README documents clone → sqlite → migrate --seed → test → serve with no paid services.
   Why now: Completes demo success criteria and ship readiness without expanding scope.
   PRD ref: `prd.md > Findings and review`, `prd.md > What We're Building`
